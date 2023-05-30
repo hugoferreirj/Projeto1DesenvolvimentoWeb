@@ -1,15 +1,15 @@
 <template>
-  <hello-world />
+  <tabela-defesas />
 </template>
 
 <script>
-import HelloWorld from "../components/HelloWorld";
+import TabelaDefesas from "@/components/TabelaDefesas.vue";
 
 export default {
   name: "HomeView",
 
   components: {
-    HelloWorld,
+    TabelaDefesas,
   },
 };
 </script>
