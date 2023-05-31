@@ -28,6 +28,7 @@
           @input="visualizarFichaIndividual()"
           item-key="Nome"
           loading-text="Carregando dados..."
+          checkbox-color="laranja"
         >
           ><template slot="progress">
             <v-progress-linear
