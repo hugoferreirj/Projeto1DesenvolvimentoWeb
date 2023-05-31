@@ -35,7 +35,10 @@
               color="laranja"
               indeterminate
             ></v-progress-linear> </template
-        ></v-data-table>
+          ><template v-slot:[`item.Data`]="{ item }">
+            {{ formatarData(item.Data) }}
+          </template>
+        </v-data-table>
       </v-card>
     </v-container>
   </div>
@@ -55,7 +58,6 @@ export default {
         { text: "Curso", value: "Curso", filterable: false },
         { text: "Programa", value: "Programa", filterable: false },
         { text: "Data", value: "Data", filterable: false },
-        /*{ text: "Orientador", value: "Orientador", filterable: false },*/
       ],
     };
   },
@@ -65,9 +67,20 @@ export default {
       fetch(url)
         .then((data) => data.json())
         .then((response) => {
-          this.defesas = response.items;
+          this.defesas = response.items.map((item) => {
+            return {
+              ...item,
+              Data: new Date(item.Data.split("/").reverse().join("-")),
+            };
+          });
           this.carregando = false;
         });
+    },
+    formatarData(data) {
+      const dia = data.getDate().toString().padStart(2, "0");
+      const mes = (data.getMonth() + 1).toString().padStart(2, "0");
+      const ano = data.getFullYear().toString();
+      return `${dia}/${mes}/${ano}`;
     },
     visualizarFichaIndividual() {
       console.log(this.defesaSelecionada[0]);
