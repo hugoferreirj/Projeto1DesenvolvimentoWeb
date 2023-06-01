@@ -18,51 +18,41 @@
           />
         </router-link>
       </div>
-      <!--<v-spacer></v-spacer>
-      <nav>
-        <v-btn
-          text
-          color="white"
-          :to="{ name: 'home' }"
-          exact-active-class="paginaAtual"
-          exact
-          ><span class="mr-2">Defesas</span></v-btn
-        >
-
-        <v-btn
-          text
-          color="white"
-          :to="{ name: 'quemsomos' }"
-          exact-active-class="paginaAtual"
-          exact
-          ><span class="mr-2">Quem somos</span></v-btn
-        >
-      </nav>-->
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" absolute temporary>
+    <v-navigation-drawer v-model="drawer" app temporary>
       <v-list nav dense>
         <v-list-item-group
           v-model="group"
           active-class="rosa--text text--accent-4"
         >
-          <v-list-item>
+          <v-list-item :to="{ name: 'home' }" exact>
             <v-list-item-icon>
               <v-icon>mdi-table</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Tabela</v-list-item-title>
           </v-list-item>
-          <v-list-item>
+          <v-list-item :to="{ name: 'quemsomos' }" exact>
             <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
+              <v-icon>mdi-account-group</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Quem somos</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-main>
+    <v-main class="corDeFundo">
       <router-view />
     </v-main>
+    <v-footer
+      color="laranja"
+      class="text-center d-flex flex-column"
+      height="100"
+    >
+      <div><strong>SSC0961 - Desenvolvimento Web e Mobile</strong></div>
+      <v-divider></v-divider>
+      <div>Docente: Adenilso da Silva Simão</div>
+      <div>Estagiário PAE: Rodrigo Henrique Ramos</div>
+    </v-footer>
   </v-app>
 </template>
 
@@ -77,8 +67,8 @@ export default {
 };
 </script>
 
-<!--<style>
-.paginaAtual {
-  background: #FF609A;
+<style>
+.corDeFundo {
+  background: #ffd152;
 }
-</style>-->
+</style>
