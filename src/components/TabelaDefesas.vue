@@ -1,5 +1,5 @@
 <template>
-  <div class="divMae">
+  <div>
     <v-container>
       <v-card>
         <v-card-title>
@@ -12,6 +12,9 @@
             hide-details
           ></v-text-field>
         </v-card-title>
+        <!--single-select
+          show-select
+          @input="visualizarFichaIndividual()"-->
         <v-data-table
           v-model="defesaSelecionada"
           :headers="cabecalhoTabela"
@@ -19,23 +22,37 @@
           :items-per-page="10"
           :search="buscar"
           :loading="carregando"
-          single-select
-          show-select
-          @input="visualizarFichaIndividual()"
           item-key="Nome"
           loading-text="Carregando dados..."
           checkbox-color="laranja"
+          @click:row="visualizarFichaIndividual"
         >
           ><template slot="progress">
             <v-progress-linear
               color="laranja"
               indeterminate
-            ></v-progress-linear> </template
-          ><template v-slot:[`item.Data`]="{ item }">
+            ></v-progress-linear>
+          </template>
+          <template v-slot:[`item.Data`]="{ item }">
             {{ formatarData(item.Data) }}
           </template>
         </v-data-table>
       </v-card>
+      <v-dialog v-model="dialog" max-width="500">
+        <v-card>
+          <v-card-title> {{ defesaSelecionadaNome }} </v-card-title>
+          <!--<v-card-subtitle> {{ defesaSelecionadaData }} </v-card-subtitle>-->
+          <v-card-text>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </v-card-text>
+          <v-card-actions>
+            <v-btn class="btn-dialog" block @click="dialog = false"
+              >Fechar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-container>
   </div>
 </template>
@@ -45,8 +62,12 @@ export default {
   name: "TabelaDefesas",
   data() {
     return {
+      dialog: false,
       buscar: "",
-      defesaSelecionada: undefined,
+      defesaSelecionadaNome: undefined,
+      defesaSelecionadaData: undefined,
+      defesaSelecionadaPrograma: undefined,
+      defesaSelecionadaCurso: undefined,
       defesas: [],
       carregando: true,
       cabecalhoTabela: [
@@ -78,8 +99,13 @@ export default {
       const ano = data.getFullYear().toString();
       return `${dia}/${mes}/${ano}`;
     },
-    visualizarFichaIndividual() {
-      console.log(this.defesaSelecionada[0]);
+    visualizarFichaIndividual(value) {
+      console.log(value.Nome);
+      this.defesaSelecionadaNome = value.Nome;
+      this.defesaSelecionadaData = this.formatarData(value.Data);
+      this.defesaSelecionadaPrograma = value.Programa;
+      this.defesaSelecionadaCurso = value.Curso;
+      this.dialog = true;
     },
   },
   beforeMount() {
@@ -90,7 +116,11 @@ export default {
 
 
 <style>
-.divMae {
-  background: #ffd152;
+td.text-start:hover {
+  cursor: pointer;
+}
+.btn-dialog {
+  color: white !important;
+  background-color: #ff609a !important;
 }
 </style>
