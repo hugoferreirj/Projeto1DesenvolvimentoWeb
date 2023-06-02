@@ -1,11 +1,11 @@
 <template>
   <v-app>
-    <v-app-bar app color="rosa">
-      <v-app-bar-nav-icon
+    <v-app-bar app color="rosa" class="elevation-2">
+      <!--<v-app-bar-nav-icon
         color="white"
         @click="drawer = true"
       ></v-app-bar-nav-icon>
-      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>-->
       <div class="d-flex align-center">
         <router-link to="/">
           <v-img
@@ -18,8 +18,15 @@
           />
         </router-link>
       </div>
+      <template>
+        <v-tabs color="white" class="ms-4">
+          <v-tabs-slider color="white"></v-tabs-slider>
+          <v-tab :to="{ name: 'home' }" exact> Tabela </v-tab>
+          <v-tab :to="{ name: 'quemsomos' }" exact> Quem somos </v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" app temporary>
+    <!--<v-navigation-drawer v-model="drawer" app temporary>
       <v-list nav dense>
         <v-list-item-group
           v-model="group"
@@ -39,7 +46,7 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer>-->
     <v-main class="corDeFundo">
       <router-view />
     </v-main>
