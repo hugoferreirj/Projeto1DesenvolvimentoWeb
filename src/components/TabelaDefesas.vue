@@ -37,7 +37,7 @@
               :items-per-page="10"
               :search="buscar"
               :loading="carregando"
-              item-key="Nome"
+              item-key="Ordem"
               loading-text="Carregando dados..."
               checkbox-color="laranja"
               @click:row="visualizarFichaIndividual"
@@ -56,41 +56,26 @@
         </v-col>
       </v-row>
       <v-dialog v-model="dialog" max-width="450">
-        <v-card>
-          <v-card-title class="mb-1">
-            {{ defesaSelecionadaNome }}
-          </v-card-title>
-          <v-card-subtitle class="pb-0">
-            {{ defesaSelecionadaData }}
-          </v-card-subtitle>
-          <v-card-text>
-            <div class="font-weight-bold ms-1">Curso</div>
-            <div class="ms-1">{{ defesaSelecionadaCurso }}</div>
-            <div class="font-weight-bold ms-1">Programa</div>
-            <div class="ms-1">{{ defesaSelecionadaPrograma }}</div>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn class="btn-dialog" block @click="dialog = false"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
+        <card-ficha-individual 
+          :defesaSelecionada="defesaSelecionada"
+          @fechar="dialog = false"
+        />
       </v-dialog>
     </v-container>
   </div>
 </template>
 
 <script>
+import CardFichaIndividual from "@/components/CardFichaIndividual.vue";
+
 export default {
   name: "TabelaDefesas",
+
   data() {
     return {
       dialog: false,
       buscar: "",
-      defesaSelecionadaNome: undefined,
-      defesaSelecionadaData: undefined,
-      defesaSelecionadaPrograma: undefined,
-      defesaSelecionadaCurso: undefined,
+      defesaSelecionada: {},
       defesas: [],
       carregando: true,
       cabecalhoTabela: [
@@ -101,6 +86,7 @@ export default {
       ],
     };
   },
+
   methods: {
     buscarDefesas() {
       const url = "http://thanos.icmc.usp.br:4567/api/v1/defesas";
@@ -124,24 +110,23 @@ export default {
     },
     visualizarFichaIndividual(value) {
       console.log(value.Nome);
-      this.defesaSelecionadaNome = value.Nome;
-      this.defesaSelecionadaData = this.formatarData(value.Data);
-      this.defesaSelecionadaPrograma = value.Programa;
-      this.defesaSelecionadaCurso = value.Curso;
+
+      let Nome = value.Nome;
+      let Curso = value.Curso;
+      let Programa = value.Programa;
+      let Data = this.formatarData(value.Data);
+
+      this.defesaSelecionada = { Nome, Curso, Programa, Data }
       this.dialog = true;
     },
   },
-  retornaCursosExistentes() {
-    var cursos = [];
-    for (var i = 0; i < this.defesas.length; i++) {
-      if (cursos.include(this.defesas[i].Curso) == false) {
-        cursos.push(this.defesas[i].Curso);
-      }
-    }
-    return cursos;
-  },
+
   beforeMount() {
     this.buscarDefesas();
+  },
+
+  components: {
+    CardFichaIndividual,
   },
 };
 </script>
