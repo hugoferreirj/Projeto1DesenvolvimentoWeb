@@ -1,4 +1,5 @@
-# projeto1
+# Projeto 1 - [SSC0961] Desenvolvimento Web e Mobile
+Listagem e filtragem das defesas de Mestrado, Doutorado e Doutorado Direto do ICMC
 
 ## Project setup
 ```
@@ -9,16 +10,7 @@ npm install
 ```
 npm run serve
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Desenvolvedores
+- Hugo Ferreira Gabriel Vieira
+- João Pedro Ribeiro da Silva
+- Mariana Kaori Randig Ekuni
