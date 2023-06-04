@@ -5,12 +5,30 @@
         <v-col cols="2" class="flex-grow-0 flex-shrink-0">
           <template>
             <v-card flat>
-              <v-card-title class="mb-0 pb-0">Curso</v-card-title>
+              <v-card-title class="mb-0 pb-0">Cursos</v-card-title>
               <v-card-text>
-                <v-radio-group class="mt-2">
-                  <v-radio label="Radio 1" value="1" color="laranja"></v-radio>
-                  <v-radio label="Radio 2" value="2" color="laranja"></v-radio>
-                  <v-radio label="Radio 3" value="3" color="laranja"></v-radio>
+                <v-radio-group class="mt-2" v-model="cursoSelecionado">
+                  <v-radio v-for="curso in filtrosRadio['Curso']"
+                    v-bind:key="curso" 
+                    v-bind:label="curso" 
+                    v-bind:value="curso"
+                    color="laranja">
+                  </v-radio>
+                  <v-btn class="btn-filter" block @click="cursoSelecionado=undefined">Limpar</v-btn>
+                </v-radio-group>
+              </v-card-text>
+            </v-card>
+            <v-card flat>
+              <v-card-title class="mb-0 pb-0">Programas</v-card-title>
+              <v-card-text>
+                <v-radio-group class="mt-2" v-model="programaSelecionado">
+                  <v-radio v-for="programa in filtrosRadio['Programa']"
+                    v-bind:key="programa" 
+                    v-bind:label="programa" 
+                    v-bind:value="programa"
+                    color="laranja">
+                  </v-radio>
+                  <v-btn class="btn-filter" block @click="programaSelecionado=undefined">Limpar</v-btn>
                 </v-radio-group>
               </v-card-text>
             </v-card>
@@ -35,7 +53,7 @@
               :headers="cabecalhoTabela"
               :items="defesas"
               :items-per-page="10"
-              :search="buscar"
+              
               :loading="carregando"
               item-key="Ordem"
               loading-text="Carregando dados..."
@@ -58,6 +76,7 @@
       <v-dialog v-model="dialog" max-width="450">
         <card-ficha-individual 
           :defesaSelecionada="defesaSelecionada"
+          :dicionarioCursos="dicionarioCursos"
           @fechar="dialog = false"
         />
       </v-dialog>
@@ -78,29 +97,76 @@ export default {
       defesaSelecionada: {},
       defesas: [],
       carregando: true,
-      cabecalhoTabela: [
-        { text: "Nome", value: "Nome", filterable: true },
-        { text: "Curso", value: "Curso", filterable: false },
-        { text: "Programa", value: "Programa", filterable: false },
-        { text: "Data", value: "Data", filterable: false },
-      ],
+
+      dicionarioCursos: {
+        ME: 'Mestrado',
+        DO: 'Doutorado',
+        DD: 'Doutorado Direto',
+      },
+      
+      filtrosRadio: {},
+      cursoSelecionado: "",
+      programaSelecionado: "",
     };
   },
 
+  computed: {
+    cabecalhoTabela(){
+      return [
+        { text: "Nome", value: "Nome", filter: (value) => {
+            return !this.buscar || value.toLocaleLowerCase().includes(this.buscar.toLocaleLowerCase());
+          }  
+        },
+        { text: "Curso", value: "Curso", 
+          filter: (value) => {
+            return !this.cursoSelecionado || value == this.cursoSelecionado;
+          } 
+        },
+        { text: "Programa", value: "Programa", 
+          filter: (value) => {
+            return !this.programaSelecionado || value == this.programaSelecionado;
+          } 
+        },
+        { text: "Data", value: "Data", filterable: false },
+      ];
+    }
+  },
+
   methods: {
-    buscarDefesas() {
-      const url = "http://thanos.icmc.usp.br:4567/api/v1/defesas";
-      fetch(url)
-        .then((data) => data.json())
-        .then((response) => {
-          this.defesas = response.items.map((item) => {
-            return {
-              ...item,
-              Data: new Date(item.Data.split("/").reverse().join("-")),
-            };
-          });
-          this.carregando = false;
+    carregarFiltrosRadio(campos){
+      campos.forEach(campo => {
+        this.filtrosRadio[campo] = []
+      });
+
+      this.defesas.forEach(defesa => {
+        campos.forEach(campo => {
+          if( !this.filtrosRadio[campo].includes(defesa[campo]) ){
+            this.filtrosRadio[campo].push(defesa[campo]);
+          }
         });
+      });
+    },
+    async buscarDefesas() {
+      const url = "http://thanos.icmc.usp.br:4567/api/v1/defesas";
+
+      try{
+        let data = await fetch(url);
+        let response = await data.json();
+
+        this.defesas = response.items.map((item) => {
+          return {
+            ...item,
+            Data: new Date(item.Data.split("/").reverse().join("-")),
+          };
+        });
+
+        this.carregarFiltrosRadio(["Curso", "Programa"]);
+
+      }catch(e){
+        console.log("Erro ao carregar as defesas!", e);
+      }
+
+      this.carregando = false;
     },
     formatarData(data) {
       const dia = data.getDate().toString().padStart(2, "0");
@@ -136,7 +202,7 @@ export default {
 td.text-start:hover {
   cursor: pointer;
 }
-.btn-dialog {
+.btn-filter {
   color: white !important;
   background-color: #ff609a !important;
 }

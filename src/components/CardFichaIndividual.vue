@@ -8,7 +8,7 @@
         </v-card-subtitle>
         <v-card-text>
         <div class="font-weight-bold ms-1">Curso</div>
-        <div class="ms-1">{{ defesaSelecionada.Curso }}</div>
+        <div class="ms-1">{{ `${defesaSelecionada.Curso} ${traduzirCurso(defesaSelecionada.Curso)}` }}</div>
         <div class="font-weight-bold ms-1">Programa</div>
         <div class="ms-1">{{ defesaSelecionada.Programa }}</div>
         </v-card-text>
@@ -26,6 +26,23 @@ export default {
 
   props: {
     defesaSelecionada: Object,
+    dicionarioCursos: Object,
+  },
+
+  methods: {
+    traduzirCurso(curso){
+      if(this.dicionarioCursos[curso] == undefined){
+        return "";
+      }else{
+        return `(${this.dicionarioCursos[curso]})`;
+      }
+    }
   },
 };
 </script>
+<style>
+.btn-dialog {
+  color: white !important;
+  background-color: #ff609a !important;
+}
+</style>
